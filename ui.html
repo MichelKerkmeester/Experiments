@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Sankey Chart Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #000000;
+            font-size: 13px;
+            line-height: 1.5;
+            width: 960px;
+            height: 960px;
+            overflow-y: auto;
+        }
+
+        .container {
+            padding: 24px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        /* Dataset Section */
+        .dataset-section {
+            background: #f7f7f7;
+            padding: 20px;
+            border-radius: 0;
+            border: 1px solid #e5e5e5;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: #f0f0f0;
+            padding: 4px;
+            border-radius: 0;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: #666666;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 0;
+        }
+
+        .tab:hover {
+            background: #e5e5e5;
+        }
+
+        .tab.active {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 0;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 40px 1fr 1fr 1fr 40px;
+            padding: 12px 16px;
+            background: #f7f7f7;
+            border-bottom: 1px solid #e5e5e5;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666666;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 1fr 1fr 40px;
+            padding: 8px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .row-number {
+            color: #999999;
+            font-size: 12px;
+        }
+
+        .table-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #e5e5e5;
+            border-radius: 0;
+            font-size: 13px;
+            background: transparent;
+        }
+
+        .table-input:focus {
+            outline: none;
+            border-color: #0066cc;
+            background: #ffffff;
+        }
+
+        .delete-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            color: #999999;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-btn:hover {
+            color: #ff0000;
+        }
+
+        /* Add Row Button */
+        .add-row-btn {
+            width: 100%;
+            padding: 10px;
+            background: #f7f7f7;
+            border: 1px dashed #d0d0d0;
+            color: #666666;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .add-row-btn:hover {
+            background: #f0f0f0;
+            border-color: #999999;
+        }
+
+        /* Settings Section */
+        .settings-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .setting-group {
+            background: #f7f7f7;
+            padding: 20px;
+            border: 1px solid #e5e5e5;
+            border-radius: 0;
+        }
+
+        .setting-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .setting-item {
+            margin-bottom: 16px;
+        }
+
+        .setting-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-label {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 0;
+            font-size: 13px;
+            background: #ffffff;
+        }
+
+        .setting-input:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+
+        /* Color Palette */
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            border-radius: 0;
+            position: relative;
+        }
+
+        .color-option:hover {
+            border-color: #e5e5e5;
+        }
+
+        .color-option.active {
+            border-color: #0066cc;
+        }
+
+        .color-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        .button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 0;
+        }
+
+        .button.primary {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .button.primary:hover {
+            background: #333333;
+        }
+
+        .button.secondary {
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #e5e5e5;
+        }
+
+        .button.secondary:hover {
+            background: #f7f7f7;
+        }
+
+        /* Presets */
+        .preset-chips {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .preset-chip {
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 0;
+        }
+
+        .preset-chip:hover {
+            background: #f7f7f7;
+        }
+
+        .preset-chip.active {
+            background: #000000;
+            color: #ffffff;
+            border-color: #000000;
+        }
+
+        /* Validation */
+        .validation {
+            padding: 8px 12px;
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .validation.success {
+            background: #e6f4ea;
+            color: #1e8e3e;
+            border: 1px solid #34a853;
+        }
+
+        .validation.error {
+            background: #fce8e6;
+            color: #d33b27;
+            border: 1px solid #ea4335;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="title">Sankey Chart</h1>
+        </div>
+
+        <!-- Dataset Section -->
+        <div class="dataset-section">
+            <div class="section-header">
+                <h2 class="section-title">Dataset</h2>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('data')">Data</button>
+                <button class="tab" onclick="switchTab('links')">Links</button>
+            </div>
+
+            <!-- Presets -->
+            <div class="preset-chips">
+                <button class="preset-chip active" onclick="loadPreset('simple')">Simple Flow</button>
+                <button class="preset-chip" onclick="loadPreset('complex')">Complex Network</button>
+                <button class="preset-chip" onclick="loadPreset('hierarchical')">Hierarchical</button>
+            </div>
+
+            <!-- Data Table -->
+            <div class="data-table">
+                <div class="table-header">
+                    <div>Name</div>
+                    <div>Source</div>
+                    <div>Target</div>
+                    <div>Value</div>
+                    <div></div>
+                </div>
+                <div id="dataRows">
+                    <!-- Rows will be inserted here -->
+                </div>
+            </div>
+
+            <button class="add-row-btn" onclick="addRow()">+ Add Row</button>
+
+            <div class="validation" id="validation"></div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="settings-section">
+            <!-- Appearance Settings -->
+            <div class="setting-group">
+                <h3 class="setting-title">Appearance</h3>
+
+                <div class="setting-item">
+                    <label class="setting-label">Container Size</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="number" class="setting-input" id="width" value="800" placeholder="Width">
+                        <input type="number" class="setting-input" id="height" value="600" placeholder="Height">
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Node Width</label>
+                    <input type="number" class="setting-input" id="nodeWidth" value="20" min="10" max="50">
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Color Scheme</label>
+                    <div class="color-palette">
+                        <div class="color-option active" data-scheme="gradient"
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></div>
+                        <div class="color-option" data-scheme="vibrant"
+                            style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%)"></div>
+                        <div class="color-option" data-scheme="ocean"
+                            style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"></div>
+                        <div class="color-option" data-scheme="sunset"
+                            style="background: linear-gradient(135deg, #fa8072 0%, #ffd700 100%)"></div>
+                        <div class="color-option" data-scheme="nature"
+                            style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Settings -->
+            <div class="setting-group">
+                <h3 class="setting-title">Advanced</h3>
+
+                <div class="setting-item">
+                    <label class="setting-label">Node Padding</label>
+                    <input type="number" class="setting-input" id="nodePadding" value="10" min="0" max="50">
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Flow Opacity</label>
+                    <input type="range" class="setting-input" id="flowOpacity" value="60" min="20" max="100">
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Enable Gradients</label>
+                    <input type="checkbox" id="enableGradients" checked style="width: auto;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="button secondary" onclick="clearAll()">Clear</button>
+            <button class="button primary" onclick="generateChart()">Generate</button>
+        </div>
+    </div>
+
+    <script>
+        // Data management
+        let chartData = [
+            { name: 'a', source: 'A', target: 'X', value: 5 },
+            { name: 'b', source: 'A', target: 'Y', value: 3 },
+            { name: 'c', source: 'B', target: 'Y', value: 4 },
+            { name: 'd', source: 'B', target: 'Z', value: 2 }
+        ];
+
+        let currentScheme = 'gradient';
+
+        // Color schemes with gradients
+        const colorSchemes = {
+            gradient: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'],
+            vibrant: ['#fa709a', '#fee140', '#30cfd0', '#330867', '#ff6b6b', '#4ecdc4'],
+            ocean: ['#4facfe', '#00f2fe', '#43e97b', '#38f9d7', '#667eea', '#764ba2'],
+            sunset: ['#fa8072', '#ffd700', '#ff6347', '#ff4500', '#ff8c00', '#ffa500'],
+            nature: ['#84fab0', '#8fd3f4', '#a8e6cf', '#dcedc1', '#b8e994', '#56ab2f']
+        };
+
+        // Presets
+        const presets = {
+            simple: [
+                { name: 'a', source: 'A', target: 'X', value: 5 },
+                { name: 'b', source: 'A', target: 'Y', value: 3 },
+                { name: 'c', source: 'B', target: 'Y', value: 4 },
+                { name: 'd', source: 'B', target: 'Z', value: 2 }
+            ],
+            complex: [
+                { name: 'flow1', source: 'Input A', target: 'Process 1', value: 100 },
+                { name: 'flow2', source: 'Input B', target: 'Process 1', value: 75 },
+                { name: 'flow3', source: 'Input C', target: 'Process 2', value: 50 },
+                { name: 'flow4', source: 'Process 1', target: 'Output X', value: 80 },
+                { name: 'flow5', source: 'Process 1', target: 'Output Y', value: 95 },
+                { name: 'flow6', source: 'Process 2', target: 'Output Y', value: 30 },
+                { name: 'flow7', source: 'Process 2', target: 'Output Z', value: 20 }
+            ],
+            hierarchical: [
+                { name: 'level1-1', source: 'CEO', target: 'VP Sales', value: 100 },
+                { name: 'level1-2', source: 'CEO', target: 'VP Engineering', value: 150 },
+                { name: 'level1-3', source: 'CEO', target: 'VP Marketing', value: 80 },
+                { name: 'level2-1', source: 'VP Sales', target: 'Sales Team', value: 100 },
+                { name: 'level2-2', source: 'VP Engineering', target: 'Frontend Team', value: 75 },
+                { name: 'level2-3', source: 'VP Engineering', target: 'Backend Team', value: 75 },
+                { name: 'level2-4', source: 'VP Marketing', target: 'Marketing Team', value: 80 }
+            ]
+        };
+
+        // Initialize
+        function init() {
+            renderDataTable();
+            setupColorPalette();
+        }
+
+        // Render data table
+        function renderDataTable() {
+            const container = document.getElementById('dataRows');
+            container.innerHTML = '';
+
+            chartData.forEach((row, index) => {
+                const rowEl = document.createElement('div');
+                rowEl.className = 'table-row';
+                rowEl.innerHTML = `
+                    <div class="row-number">${row.name}</div>
+                    <input class="table-input" value="${row.source}" onchange="updateData(${index}, 'source', this.value)">
+                    <input class="table-input" value="${row.target}" onchange="updateData(${index}, 'target', this.value)">
+                    <input class="table-input" type="number" value="${row.value}" onchange="updateData(${index}, 'value', parseFloat(this.value))">
+                    <button class="delete-btn" onclick="deleteRow(${index})">×</button>
+                `;
+                container.appendChild(rowEl);
+            });
+
+            validateData();
+        }
+
+        // Update data
+        function updateData(index, field, value) {
+            chartData[index][field] = value;
+            validateData();
+        }
+
+        // Add row
+        function addRow() {
+            const newName = String.fromCharCode(97 + chartData.length); // a, b, c, ...
+            chartData.push({
+                name: newName,
+                source: '',
+                target: '',
+                value: 1
+            });
+            renderDataTable();
+        }
+
+        // Delete row
+        function deleteRow(index) {
+            chartData.splice(index, 1);
+            renderDataTable();
+        }
+
+        // Switch tab
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+        }
+
+        // Load preset
+        function loadPreset(presetName) {
+            document.querySelectorAll('.preset-chip').forEach(p => p.classList.remove('active'));
+            document.querySelector(`[onclick="loadPreset('${presetName}')"]`).classList.add('active');
+
+            chartData = JSON.parse(JSON.stringify(presets[presetName]));
+            renderDataTable();
+        }
+
+        // Setup color palette
+        function setupColorPalette() {
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', function () {
+                    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    currentScheme = this.dataset.scheme;
+                });
+            });
+        }
+
+        // Validate data
+        function validateData() {
+            const validation = document.getElementById('validation');
+            let isValid = true;
+            let message = '';
+
+            for (let row of chartData) {
+                if (!row.source || !row.target || !row.value) {
+                    isValid = false;
+                    message = 'All fields must be filled';
+                    break;
+                }
+                if (row.value <= 0) {
+                    isValid = false;
+                    message = 'Values must be greater than 0';
+                    break;
+                }
+            }
+
+            if (isValid) {
+                validation.className = 'validation success';
+                validation.textContent = '✓ Data is valid';
+                validation.style.display = 'block';
+            } else {
+                validation.className = 'validation error';
+                validation.textContent = '⚠ ' + message;
+                validation.style.display = 'block';
+            }
+
+            return isValid;
+        }
+
+        // Generate chart
+        function generateChart() {
+            if (!validateData()) {
+                return;
+            }
+
+            const settings = {
+                width: parseInt(document.getElementById('width').value),
+                height: parseInt(document.getElementById('height').value),
+                nodeWidth: parseInt(document.getElementById('nodeWidth').value),
+                nodePadding: parseInt(document.getElementById('nodePadding').value),
+                flowOpacity: parseInt(document.getElementById('flowOpacity').value) / 100,
+                enableGradients: document.getElementById('enableGradients').checked,
+                colorScheme: currentScheme,
+                colors: colorSchemes[currentScheme]
+            };
+
+            const flowData = chartData.map(row => ({
+                from: row.source,
+                to: row.target,
+                value: row.value
+            }));
+
+            parent.postMessage({
+                pluginMessage: {
+                    type: 'generate-chart',
+                    data: flowData,
+                    settings: settings
+                }
+            }, '*');
+        }
+
+        // Clear all
+        function clearAll() {
+            parent.postMessage({
+                pluginMessage: {
+                    type: 'clear-canvas'
+                }
+            }, '*');
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+
+</html>
