@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sankey Chart - Minimal Design</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <!-- Sankey plugin for Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey@0.12.0/dist/chartjs-chart-sankey.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Minimal Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover {
+            border-color: #e0e0e0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666666;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-change.positive {
+            color: #16a34a;
+        }
+
+        .stat-change.negative {
+            color: #dc2626;
+        }
+
+        .stat-change-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: #ffffff;
+            border: 1px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            margin-bottom: 32px;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .chart-description {
+            font-size: 14px;
+            color: #666666;
+            line-height: 1.5;
+        }
+
+        /* Minimal Controls */
+        .chart-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .control-btn:hover {
+            background: #ffffff;
+            color: #1a1a1a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-btn.active {
+            background: #ffffff;
+            color: #1a1a1a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-btn {
+            margin-left: auto;
+            padding: 10px 20px;
+            background: #1a1a1a;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-btn:hover {
+            background: #000000;
+            transform: translateY(-1px);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 600px;
+            margin: 0 -16px;
+        }
+
+        /* Custom Tooltip Styles */
+        .custom-tooltip {
+            position: absolute;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            min-width: 240px;
+        }
+
+        .custom-tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tooltip-flow-indicator {
+            width: 4px;
+            height: 20px;
+            border-radius: 2px;
+        }
+
+        .tooltip-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .tooltip-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .tooltip-label {
+            color: #666666;
+        }
+
+        .tooltip-value {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tooltip-percentage {
+            font-size: 12px;
+            color: #999999;
+            margin-left: 8px;
+        }
+
+        /* Legend */
+        .legend-container {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .legend-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666666;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666666;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            color: #666666;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #f0f0f0;
+            border-top-color: #1a1a1a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Icon */
+        .icon {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .chart-container {
+                padding: 20px;
+            }
+
+            .chart-controls {
+                flex-direction: column;
+            }
+
+            .download-btn {
+                margin-left: 0;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .chart-wrapper {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Flow Volume</div>
+                <div class="stat-value">847.3M</div>
+                <div class="stat-change positive">
+                    <svg class="stat-change-icon" viewBox="0 0 16 16">
+                        <path d="M8 2l5 5H3l5-5z" fill="currentColor" />
+                    </svg>
+                    <span>12.5%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Active Nodes</div>
+                <div class="stat-value">24</div>
+                <div class="stat-change negative">
+                    <svg class="stat-change-icon" viewBox="0 0 16 16">
+                        <path d="M8 14l5-5H3l5 5z" fill="currentColor" />
+                    </svg>
+                    <span>4.0%</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Average Flow</div>
+                <div class="stat-value">35.3M</div>
+                <div class="stat-change positive">
+                    <svg class="stat-change-icon" viewBox="0 0 16 16">
+                        <path d="M8 2l5 5H3l5-5z" fill="currentColor" />
+                    </svg>
+                    <span>8.2%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2 class="chart-title">Data Flow Analysis</h2>
+                <p class="chart-description">
+                    Visualizing the flow of data through our processing pipeline, from initial sources to final outputs.
+                </p>
+            </div>
+
+            <div class="chart-controls">
+                <div class="control-group">
+                    <button class="control-btn active" data-period="day">Day</button>
+                    <button class="control-btn" data-period="week">Week</button>
+                    <button class="control-btn" data-period="month">Month</button>
+                    <button class="control-btn" data-period="year">Year</button>
+                </div>
+
+                <button class="download-btn" onclick="downloadChart()">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export
+                </button>
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="sankeyChart"></canvas>
+            </div>
+
+            <!-- Custom Tooltip -->
+            <div class="custom-tooltip" id="customTooltip">
+                <div class="tooltip-header">
+                    <div class="tooltip-flow-indicator"></div>
+                    <div class="tooltip-title"></div>
+                </div>
+                <div class="tooltip-content"></div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend-container">
+                <h3 class="legend-title">Node Categories</h3>
+                <div class="legend-grid" id="legendGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chart configuration
+        const ctx = document.getElementById('sankeyChart').getContext('2d');
+
+        // Node categories for legend
+        const nodeCategories = {
+            'Sources': ['Web Traffic', 'Mobile App', 'API Calls', 'IoT Devices'],
+            'Processing': ['Data Processing'],
+            'Analytics': ['Real-time Analytics', 'Batch Analytics', 'ML Pipeline'],
+            'Storage': ['Hot Storage', 'Cold Storage', 'Model Storage', 'Dashboard', 'Reports', 'Predictions API'],
+            'Outputs': ['User Dashboard', 'Alert System', 'Data Warehouse', 'Email Reports', 'Executive Dashboard', 'Recommendation Engine']
+        };
+
+        // Color palette - more minimal
+        const colorPalette = {
+            'Sources': '#3b82f6',      // Blue
+            'Processing': '#10b981',   // Green
+            'Analytics': '#f59e0b',    // Amber
+            'Storage': '#8b5cf6',      // Purple
+            'Outputs': '#6366f1'       // Indigo
+        };
+
+        // Data for different time periods
+        const periodData = {
+            day: {
+                flows: [
+                    // Source -> Processing
+                    { from: 'Web Traffic', to: 'Data Processing', flow: 120 },
+                    { from: 'Mobile App', to: 'Data Processing', flow: 80 },
+                    { from: 'API Calls', to: 'Data Processing', flow: 150 },
+                    { from: 'IoT Devices', to: 'Data Processing', flow: 60 },
+                    // Processing -> Analytics
+                    { from: 'Data Processing', to: 'Real-time Analytics', flow: 180 },
+                    { from: 'Data Processing', to: 'Batch Analytics', flow: 150 },
+                    { from: 'Data Processing', to: 'ML Pipeline', flow: 80 },
+                    // Analytics -> Storage
+                    { from: 'Real-time Analytics', to: 'Hot Storage', flow: 120 },
+                    { from: 'Real-time Analytics', to: 'Dashboard', flow: 60 },
+                    { from: 'Batch Analytics', to: 'Cold Storage', flow: 100 },
+                    { from: 'Batch Analytics', to: 'Reports', flow: 50 },
+                    { from: 'ML Pipeline', to: 'Model Storage', flow: 40 },
+                    { from: 'ML Pipeline', to: 'Predictions API', flow: 40 },
+                    // Storage -> Output
+                    { from: 'Hot Storage', to: 'User Dashboard', flow: 80 },
+                    { from: 'Hot Storage', to: 'Alert System', flow: 40 },
+                    { from: 'Cold Storage', to: 'Data Warehouse', flow: 100 },
+                    { from: 'Reports', to: 'Email Reports', flow: 30 },
+                    { from: 'Reports', to: 'Executive Dashboard', flow: 20 },
+                    { from: 'Predictions API', to: 'Recommendation Engine', flow: 40 }
+                ],
+                stats: {
+                    totalFlow: '847.3M',
+                    totalFlowChange: { value: 12.5, positive: true },
+                    activeNodes: '24',
+                    activeNodesChange: { value: 4.0, positive: false },
+                    averageFlow: '35.3M',
+                    averageFlowChange: { value: 8.2, positive: true }
+                }
+            },
+            week: {
+                flows: [
+                    // Source -> Processing (weekly aggregated)
+                    { from: 'Web Traffic', to: 'Data Processing', flow: 840 },
+                    { from: 'Mobile App', to: 'Data Processing', flow: 560 },
+                    { from: 'API Calls', to: 'Data Processing', flow: 1050 },
+                    { from: 'IoT Devices', to: 'Data Processing', flow: 420 },
+                    // Processing -> Analytics
+                    { from: 'Data Processing', to: 'Real-time Analytics', flow: 1260 },
+                    { from: 'Data Processing', to: 'Batch Analytics', flow: 1050 },
+                    { from: 'Data Processing', to: 'ML Pipeline', flow: 560 },
+                    // Analytics -> Storage
+                    { from: 'Real-time Analytics', to: 'Hot Storage', flow: 840 },
+                    { from: 'Real-time Analytics', to: 'Dashboard', flow: 420 },
+                    { from: 'Batch Analytics', to: 'Cold Storage', flow: 700 },
+                    { from: 'Batch Analytics', to: 'Reports', flow: 350 },
+                    { from: 'ML Pipeline', to: 'Model Storage', flow: 280 },
+                    { from: 'ML Pipeline', to: 'Predictions API', flow: 280 },
+                    // Storage -> Output
+                    { from: 'Hot Storage', to: 'User Dashboard', flow: 560 },
+                    { from: 'Hot Storage', to: 'Alert System', flow: 280 },
+                    { from: 'Cold Storage', to: 'Data Warehouse', flow: 700 },
+                    { from: 'Reports', to: 'Email Reports', flow: 210 },
+                    { from: 'Reports', to: 'Executive Dashboard', flow: 140 },
+                    { from: 'Predictions API', to: 'Recommendation Engine', flow: 280 }
+                ],
+                stats: {
+                    totalFlow: '5.9B',
+                    totalFlowChange: { value: 15.3, positive: true },
+                    activeNodes: '24',
+                    activeNodesChange: { value: 0, positive: true },
+                    averageFlow: '247.1M',
+                    averageFlowChange: { value: 11.8, positive: true }
+                }
+            },
+            month: {
+                flows: [
+                    // Source -> Processing (monthly aggregated)
+                    { from: 'Web Traffic', to: 'Data Processing', flow: 3600 },
+                    { from: 'Mobile App', to: 'Data Processing', flow: 2400 },
+                    { from: 'API Calls', to: 'Data Processing', flow: 4500 },
+                    { from: 'IoT Devices', to: 'Data Processing', flow: 1800 },
+                    // Processing -> Analytics
+                    { from: 'Data Processing', to: 'Real-time Analytics', flow: 5400 },
+                    { from: 'Data Processing', to: 'Batch Analytics', flow: 4500 },
+                    { from: 'Data Processing', to: 'ML Pipeline', flow: 2400 },
+                    // Analytics -> Storage
+                    { from: 'Real-time Analytics', to: 'Hot Storage', flow: 3600 },
+                    { from: 'Real-time Analytics', to: 'Dashboard', flow: 1800 },
+                    { from: 'Batch Analytics', to: 'Cold Storage', flow: 3000 },
+                    { from: 'Batch Analytics', to: 'Reports', flow: 1500 },
+                    { from: 'ML Pipeline', to: 'Model Storage', flow: 1200 },
+                    { from: 'ML Pipeline', to: 'Predictions API', flow: 1200 },
+                    // Storage -> Output
+                    { from: 'Hot Storage', to: 'User Dashboard', flow: 2400 },
+                    { from: 'Hot Storage', to: 'Alert System', flow: 1200 },
+                    { from: 'Cold Storage', to: 'Data Warehouse', flow: 3000 },
+                    { from: 'Reports', to: 'Email Reports', flow: 900 },
+                    { from: 'Reports', to: 'Executive Dashboard', flow: 600 },
+                    { from: 'Predictions API', to: 'Recommendation Engine', flow: 1200 }
+                ],
+                stats: {
+                    totalFlow: '25.4B',
+                    totalFlowChange: { value: 18.7, positive: true },
+                    activeNodes: '24',
+                    activeNodesChange: { value: 2.1, positive: true },
+                    averageFlow: '1.06B',
+                    averageFlowChange: { value: 14.2, positive: true }
+                }
+            },
+            year: {
+                flows: [
+                    // Source -> Processing (yearly aggregated)
+                    { from: 'Web Traffic', to: 'Data Processing', flow: 43200 },
+                    { from: 'Mobile App', to: 'Data Processing', flow: 28800 },
+                    { from: 'API Calls', to: 'Data Processing', flow: 54000 },
+                    { from: 'IoT Devices', to: 'Data Processing', flow: 21600 },
+                    // Processing -> Analytics
+                    { from: 'Data Processing', to: 'Real-time Analytics', flow: 64800 },
+                    { from: 'Data Processing', to: 'Batch Analytics', flow: 54000 },
+                    { from: 'Data Processing', to: 'ML Pipeline', flow: 28800 },
+                    // Analytics -> Storage
+                    { from: 'Real-time Analytics', to: 'Hot Storage', flow: 43200 },
+                    { from: 'Real-time Analytics', to: 'Dashboard', flow: 21600 },
+                    { from: 'Batch Analytics', to: 'Cold Storage', flow: 36000 },
+                    { from: 'Batch Analytics', to: 'Reports', flow: 18000 },
+                    { from: 'ML Pipeline', to: 'Model Storage', flow: 14400 },
+                    { from: 'ML Pipeline', to: 'Predictions API', flow: 14400 },
+                    // Storage -> Output
+                    { from: 'Hot Storage', to: 'User Dashboard', flow: 28800 },
+                    { from: 'Hot Storage', to: 'Alert System', flow: 14400 },
+                    { from: 'Cold Storage', to: 'Data Warehouse', flow: 36000 },
+                    { from: 'Reports', to: 'Email Reports', flow: 10800 },
+                    { from: 'Reports', to: 'Executive Dashboard', flow: 7200 },
+                    { from: 'Predictions API', to: 'Recommendation Engine', flow: 14400 }
+                ],
+                stats: {
+                    totalFlow: '304.8B',
+                    totalFlowChange: { value: 23.5, positive: true },
+                    activeNodes: '24',
+                    activeNodesChange: { value: 5.8, positive: true },
+                    averageFlow: '12.7B',
+                    averageFlowChange: { value: 19.3, positive: true }
+                }
+            }
+        };
+
+        // Initialize with day data
+        let currentPeriod = 'day';
+        let sankeyChart = null;
+        let totalFlow = 0;
+
+        // Update stats cards
+        function updateStats(stats) {
+            // Update Total Flow
+            document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = stats.totalFlow;
+            const flowChange = document.querySelector('.stat-card:nth-child(1) .stat-change');
+            flowChange.className = `stat-change ${stats.totalFlowChange.positive ? 'positive' : 'negative'}`;
+            flowChange.querySelector('svg path').setAttribute('d',
+                stats.totalFlowChange.positive ? 'M8 2l5 5H3l5-5z' : 'M8 14l5-5H3l5 5z'
+            );
+            flowChange.querySelector('span').textContent = `${stats.totalFlowChange.value}%`;
+
+            // Update Active Nodes
+            document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = stats.activeNodes;
+            const nodesChange = document.querySelector('.stat-card:nth-child(2) .stat-change');
+            nodesChange.className = `stat-change ${stats.activeNodesChange.positive ? 'positive' : 'negative'}`;
+            nodesChange.querySelector('svg path').setAttribute('d',
+                stats.activeNodesChange.positive ? 'M8 2l5 5H3l5-5z' : 'M8 14l5-5H3l5 5z'
+            );
+            nodesChange.querySelector('span').textContent = `${stats.activeNodesChange.value}%`;
+
+            // Update Average Flow
+            document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = stats.averageFlow;
+            const avgChange = document.querySelector('.stat-card:nth-child(3) .stat-change');
+            avgChange.className = `stat-change ${stats.averageFlowChange.positive ? 'positive' : 'negative'}`;
+            avgChange.querySelector('svg path').setAttribute('d',
+                stats.averageFlowChange.positive ? 'M8 2l5 5H3l5-5z' : 'M8 14l5-5H3l5 5z'
+            );
+            avgChange.querySelector('span').textContent = `${stats.averageFlowChange.value}%`;
+        }
+
+        // Create/update chart
+        function createChart(period) {
+            const data = {
+                datasets: [{
+                    data: periodData[period].flows,
+                    colorFrom: (c) => getNodeColor(c.dataset.data[c.dataIndex].from),
+                    colorTo: (c) => getNodeColor(c.dataset.data[c.dataIndex].to),
+                    colorMode: 'gradient',
+                    alpha: 0.7,
+                    labels: {
+                        color: '#1a1a1a',
+                        font: {
+                            size: 13,
+                            family: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif',
+                            weight: '500'
+                        },
+                        padding: 16
+                    }
+                }]
+            };
+
+            // Calculate total flow for percentage calculations
+            totalFlow = data.datasets[0].data.reduce((sum, item) => sum + item.flow, 0);
+
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'point',
+                    intersect: true,
+                    onHover: (event, chartElements) => {
+                        if (event.native) {
+                            const canvas = event.native.target;
+                            if (canvas) {
+                                canvas.style.cursor = chartElements.length ? 'pointer' : 'default';
+                            }
+                        }
+                        // Reset previous highlights
+                        sankeyChart.data.datasets[0].data.forEach(d => {
+                            d.originalAlpha = d.originalAlpha !== undefined ? d.originalAlpha : sankeyChart.data.datasets[0].alpha;
+                            d.highlighted = false;
+                        });
+                        sankeyChart.update(); // Necessary to clear previous highlights before applying new ones
+
+                        if (chartElements.length > 0) {
+                            const activeElement = chartElements[0];
+                            const activeData = sankeyChart.data.datasets[activeElement.datasetIndex].data[activeElement.index];
+
+                            // Highlight the hovered flow and its nodes
+                            sankeyChart.data.datasets[0].data.forEach((d, i) => {
+                                if (i === activeElement.index) {
+                                    d.alpha = 1; // Highlight flow
+                                    d.highlighted = true;
+                                } else {
+                                    // Dim other flows
+                                    d.alpha = 0.2;
+                                }
+                            });
+                            sankeyChart.update();
+                        } else {
+                            // Restore original alpha if nothing is hovered
+                            sankeyChart.data.datasets[0].data.forEach(d => {
+                                d.alpha = d.originalAlpha;
+                            });
+                            sankeyChart.update();
+                        }
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false, // Disable default tooltip
+                        external: function (context) {
+                            const tooltipEl = document.getElementById('customTooltip');
+                            const tooltipModel = context.tooltip;
+
+                            if (tooltipModel.opacity === 0) {
+                                tooltipEl.classList.remove('show');
+                                return;
+                            }
+
+                            if (tooltipModel.dataPoints && tooltipModel.dataPoints.length > 0) {
+                                const dataPoint = tooltipModel.dataPoints[0];
+                                const item = dataPoint.dataset.data[dataPoint.dataIndex];
+
+                                // Update tooltip content
+                                const flowIndicator = tooltipEl.querySelector('.tooltip-flow-indicator');
+                                const title = tooltipEl.querySelector('.tooltip-title');
+                                const content = tooltipEl.querySelector('.tooltip-content');
+
+                                // Set flow indicator color
+                                const fromColor = getNodeColor(item.from);
+                                const toColor = getNodeColor(item.to);
+                                flowIndicator.style.background = `linear-gradient(to bottom, ${fromColor}, ${toColor})`;
+
+                                // Set title
+                                title.textContent = `${item.from} → ${item.to}`;
+
+                                // Set content
+                                const percentage = ((item.flow / totalFlow) * 100).toFixed(1);
+                                const unit = period === 'day' ? 'M' : period === 'week' ? 'M' : period === 'month' ? 'M' : 'M';
+                                content.innerHTML = `
+                                    <div class="tooltip-row">
+                                        <span class="tooltip-label">Flow Volume</span>
+                                        <span class="tooltip-value">${item.flow.toLocaleString()}${unit}</span>
+                                    </div>
+                                    <div class="tooltip-row">
+                                        <span class="tooltip-label">Percentage</span>
+                                        <span class="tooltip-value">${percentage}%<span class="tooltip-percentage">of total</span></span>
+                                    </div>
+                                    <div class="tooltip-row">
+                                        <span class="tooltip-label">From Category</span>
+                                        <span class="tooltip-value">${getNodeCategory(item.from)}</span>
+                                    </div>
+                                    <div class="tooltip-row">
+                                        <span class="tooltip-label">To Category</span>
+                                        <span class="tooltip-value">${getNodeCategory(item.to)}</span>
+                                    </div>
+                                `;
+
+                                // Check if it's a node or a flow
+                                if (item.from && item.to) { // It's a flow
+                                    // Flow tooltip already configured
+                                } else if (item.name) { // Assuming it's a node, if we had node-specific data points
+                                    // This part needs node-specific hover logic, which is not directly supported by sankey plugin for nodes.
+                                    // We handle node highlighting through flow hovers.
+                                    // For dedicated node tooltips, a different approach or plugin extension would be needed.
+                                    title.textContent = item.name;
+                                    const incoming = sankeyChart.data.datasets[0].data.filter(d => d.to === item.name).reduce((sum, d) => sum + d.flow, 0);
+                                    const outgoing = sankeyChart.data.datasets[0].data.filter(d => d.from === item.name).reduce((sum, d) => sum + d.flow, 0);
+                                    content.innerHTML = `
+                                        <div class="tooltip-row">
+                                            <span class="tooltip-label">Total Incoming</span>
+                                            <span class="tooltip-value">${incoming.toLocaleString()}${unit}</span>
+                                        </div>
+                                        <div class="tooltip-row">
+                                            <span class="tooltip-label">Total Outgoing</span>
+                                            <span class="tooltip-value">${outgoing.toLocaleString()}${unit}</span>
+                                        </div>
+                                        <div class="tooltip-row">
+                                            <span class="tooltip-label">Category</span>
+                                            <span class="tooltip-value">${getNodeCategory(item.name)}</span>
+                                        </div>
+                                    `;
+                                }
+
+
+                                // Position tooltip
+                                const position = context.chart.canvas.getBoundingClientRect();
+                                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.offsetHeight - 10 + 'px'; // Adjust Y to be above cursor
+
+                                tooltipEl.classList.add('show');
+                            } else {
+                                tooltipEl.classList.remove('show');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false
+                    }
+                }
+            };
+
+            // Destroy existing chart if it exists
+            if (sankeyChart) {
+                sankeyChart.destroy();
+            }
+
+            // Create new chart
+            sankeyChart = new Chart(ctx, {
+                type: 'sankey',
+                data: data,
+                options: options
+            });
+
+            // Add hover effects for nodes via canvas event listeners
+            // This is a workaround as the plugin doesn't directly support node-specific hover states for our desired highlighting
+            sankeyChart.canvas.addEventListener('mousemove', (event) => {
+                const points = sankeyChart.getElementsAtEventForMode(event, 'point', { intersect: true }, true);
+
+                // Reset all flows to original or dimmed alpha if nothing specific is truly hovered.
+                let isHoveringFlow = false;
+                if (points.length > 0) {
+                    const activeElement = points[0];
+                    const elementType = sankeyChart.data.datasets[activeElement.datasetIndex].data[activeElement.index];
+                    if (elementType && elementType.from && elementType.to) { // Check if it's a flow
+                        isHoveringFlow = true;
+                    }
+                }
+
+                if (!isHoveringFlow) {
+                    let somethingHighlighted = false;
+                    sankeyChart.data.datasets[0].data.forEach(d => {
+                        if (d.highlightedNode) somethingHighlighted = true;
+                    });
+
+                    // If no flow is hovered, check for node hover based on coordinates
+                    const chartArea = sankeyChart.chartArea;
+                    const x = event.offsetX;
+                    const y = event.pageY - sankeyChart.canvas.getBoundingClientRect().top; // Adjust for canvas position
+
+                    let hoveredNodeName = null;
+                    if (sankeyChart.scene && sankeyChart.scene.nodes) {
+                        sankeyChart.scene.nodes.forEach(node => {
+                            if (x >= node.x && x <= node.x + node.width && y >= node.y && y <= node.y + node.height) {
+                                hoveredNodeName = node.key;
+                            }
+                        });
+                    }
+
+                    if (hoveredNodeName) {
+                        sankeyChart.data.datasets[0].data.forEach(d => {
+                            if (d.from === hoveredNodeName || d.to === hoveredNodeName) {
+                                d.alpha = 1;
+                                d.highlightedNode = true;
+                            } else {
+                                d.alpha = 0.2;
+                                d.highlightedNode = false;
+                            }
+                        });
+                        sankeyChart.update('none'); // 'none' for no animation to avoid stutter
+                        if (document.getElementById('customTooltip')) document.getElementById('customTooltip').classList.remove('show'); // Hide flow tooltip
+
+                    } else if (!somethingHighlighted) { // Only reset if no node was highlighted previously
+                        sankeyChart.data.datasets[0].data.forEach(d => {
+                            d.alpha = d.originalAlpha !== undefined ? d.originalAlpha : sankeyChart.config.data.datasets[0].alpha;
+                            d.highlightedNode = false;
+                        });
+                        sankeyChart.update('none');
+                    }
+                }
+            });
+        }
+
+        function getNodeColor(nodeName) {
+            for (const [category, nodes] of Object.entries(nodeCategories)) {
+                if (nodes.includes(nodeName)) {
+                    return colorPalette[category];
+                }
+            }
+            return '#6b7280'; // Default gray
+        }
+
+        function getNodeCategory(nodeName) {
+            for (const [category, nodes] of Object.entries(nodeCategories)) {
+                if (nodes.includes(nodeName)) {
+                    return category;
+                }
+            }
+            return 'Other';
+        }
+
+        // Create legend
+        function createLegend() {
+            const legendGrid = document.getElementById('legendGrid');
+
+            for (const [category, color] of Object.entries(colorPalette)) {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = color;
+
+                legendItem.appendChild(colorBox);
+                legendItem.appendChild(document.createTextNode(category));
+
+                legendGrid.appendChild(legendItem);
+            }
+        }
+
+        // Initialize
+        createLegend();
+        createChart(currentPeriod);
+        updateStats(periodData[currentPeriod].stats);
+
+        // Period selection
+        document.querySelectorAll('.control-btn[data-period]').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Update active state
+                document.querySelectorAll('.control-btn[data-period]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update current period
+                currentPeriod = this.dataset.period;
+
+                // Update chart and stats
+                createChart(currentPeriod);
+                updateStats(periodData[currentPeriod].stats);
+            });
+        });
+
+        // Download functionality
+        function downloadChart() {
+            const link = document.createElement('a');
+            link.download = `data-flow-analysis-${currentPeriod}.png`;
+            link.href = sankeyChart.toBase64Image();
+            link.click();
+        }
+    </script>
+</body>
+
+</html>
