@@ -369,8 +369,9 @@ class TrendChart {
   generateSampleData() {
     // Generate sample data similar to the screenshots
     const days = 60;
+    const endDate = new Date(); // Today
     const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
+    startDate.setDate(endDate.getDate() - days + 1);
     
     this.rawData = [];
     for (let i = 0; i < days; i++) {
@@ -386,6 +387,26 @@ class TrendChart {
         date: date,
         value: value
       });
+    }
+    
+    // Verify data integrity
+    this.verifyDataIntegrity();
+  }
+  
+  verifyDataIntegrity() {
+    // Check if we have continuous data
+    const hasNullValues = this.rawData.some(d => d.value === null || d.value === undefined);
+    const dataLength = this.rawData.length;
+    
+    if (hasNullValues) {
+      console.warn('Data contains null values');
+    }
+    
+    // Ensure dates are in order
+    for (let i = 1; i < this.rawData.length; i++) {
+      if (this.rawData[i].date <= this.rawData[i-1].date) {
+        console.warn('Dates are not in ascending order at index', i);
+      }
     }
   }
   
@@ -405,19 +426,27 @@ class TrendChart {
   
   calculateRollingAverage(data, window) {
     const result = [];
+    
     for (let i = 0; i < data.length; i++) {
-      if (i < window - 1) {
-        result.push(null);
+      // Calculate the start index for the window
+      // Always look back up to 'window' days, but use whatever is available
+      const start = Math.max(0, i - window + 1);
+      const end = i + 1;
+      
+      // Get the window data
+      const windowData = data.slice(start, end);
+      const validValues = windowData.filter(v => v !== null && v !== undefined && !isNaN(v));
+      
+      // Calculate average if we have any valid values
+      if (validValues.length > 0) {
+        const sum = validValues.reduce((a, b) => a + b, 0);
+        result.push(sum / validValues.length);
       } else {
-        const validValues = data.slice(i - window + 1, i + 1).filter(v => v !== null && !isNaN(v));
-        if (validValues.length > 0) {
-          const sum = validValues.reduce((a, b) => a + b, 0);
-          result.push(sum / validValues.length);
-        } else {
-          result.push(null);
-        }
+        // No valid values in window
+        result.push(null);
       }
     }
+    
     return result;
   }
   
@@ -479,16 +508,18 @@ class TrendChart {
     // Rolling average dataset
     if (this.options.visualization === 'rolling' || this.options.visualization === 'both') {
       datasets.push({
-        label: `${this.options.timeRange === 'monthly' ? '30' : '3-Week'} Rolling Avg`,
+        label: `${this.options.timeRange === 'monthly' ? '30-Day' : '3-Week'} Rolling Avg`,
         data: this.processedData.rolling,
         borderColor: '#fbbc04',
         backgroundColor: 'transparent',
         borderWidth: 3,
         pointRadius: 0,
         pointHoverRadius: 4,
-        tension: 0.4,
+        pointHitRadius: 10,
+        tension: 0.2,  // Reduced tension for smoother line
         fill: false,
-        spanGaps: false
+        spanGaps: true,
+        clip: false  // Don't clip the line at chart edges
       });
     }
     
@@ -556,7 +587,10 @@ class TrendChart {
             },
             ticks: {
               maxTicksLimit: 10,
-              color: '#666'
+              color: '#666',
+              autoSkip: true,
+              maxRotation: 0,
+              minRotation: 0
             }
           },
           y: {
@@ -605,16 +639,18 @@ class TrendChart {
     
     if (this.options.visualization === 'rolling' || this.options.visualization === 'both') {
       datasets.push({
-        label: `${this.options.timeRange === 'monthly' ? '30' : '3-Week'} Rolling Avg`,
+        label: `${this.options.timeRange === 'monthly' ? '30-Day' : '3-Week'} Rolling Avg`,
         data: this.processedData.rolling,
         borderColor: '#fbbc04',
         backgroundColor: 'transparent',
         borderWidth: 3,
         pointRadius: 0,
         pointHoverRadius: 4,
-        tension: 0.4,
+        pointHitRadius: 10,
+        tension: 0.2,  // Reduced tension for smoother line
         fill: false,
-        spanGaps: false
+        spanGaps: true,
+        clip: false  // Don't clip the line at chart edges
       });
     }
     
