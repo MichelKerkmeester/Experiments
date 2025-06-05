@@ -291,6 +291,107 @@
             flex-shrink: 0;
         }
 
+        /* Enhanced Legend Styles */
+        .legend-section {
+            display: none;
+            /* Hide verbose sections */
+        }
+
+        /* Compact Footer Legend */
+        .legend-footer {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-section {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #999999;
+        }
+
+        .footer-thickness {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .footer-line {
+            background: #999999;
+            border-radius: 1px;
+        }
+
+        .footer-line.thin {
+            width: 12px;
+            height: 1px;
+        }
+
+        .footer-line.thick {
+            width: 16px;
+            height: 3px;
+        }
+
+        .footer-pattern {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .mini-flow {
+            background: #999999;
+            border-radius: 1px;
+            height: 3px;
+        }
+
+        .mini-flow.wide {
+            width: 8px;
+        }
+
+        .mini-flow.narrow {
+            width: 4px;
+            height: 1px;
+            background: #dc2626;
+        }
+
+        .mini-branch-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .mini-branch {
+            width: 6px;
+            height: 1px;
+            background: #999999;
+            border-radius: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .legend-footer {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .footer-section {
+                gap: 16px;
+            }
+
+            .footer-item {
+                font-size: 10px;
+            }
+        }
+
         /* Loading State */
         .loading {
             display: flex;
@@ -348,6 +449,392 @@
                 height: 400px;
             }
         }
+
+        /* Timeline Controls */
+        .timeline-container {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .timeline-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: #666666;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timeline-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .timeline-slider-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .timeline-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e5e5;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .timeline-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s;
+        }
+
+        .timeline-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: pointer;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s;
+        }
+
+        .timeline-play-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: #1a1a1a;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .timeline-play-btn:hover {
+            background: #000000;
+            transform: scale(1.05);
+        }
+
+        .timeline-play-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .timeline-speed {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #666666;
+            flex-shrink: 0;
+        }
+
+        .speed-btn {
+            padding: 4px 8px;
+            background: transparent;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            color: #666666;
+            transition: all 0.2s;
+        }
+
+        .speed-btn:hover,
+        .speed-btn.active {
+            background: #1a1a1a;
+            color: #ffffff;
+            border-color: #1a1a1a;
+        }
+
+        .timeline-markers {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            height: 20px;
+            pointer-events: none;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            top: 8px;
+            width: 1px;
+            height: 8px;
+            background: #d1d5db;
+        }
+
+        .timeline-marker.major {
+            height: 12px;
+            top: 6px;
+            background: #9ca3af;
+        }
+
+        .timeline-marker-label {
+            position: absolute;
+            top: 18px;
+            font-size: 10px;
+            color: #9ca3af;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        /* Temporal Stats */
+        .temporal-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .temporal-stat {
+            text-align: center;
+        }
+
+        .temporal-stat-label {
+            font-size: 11px;
+            color: #666666;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .temporal-stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .temporal-stat-trend {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .temporal-stat-trend.up {
+            color: #16a34a;
+        }
+
+        .temporal-stat-trend.down {
+            color: #dc2626;
+        }
+
+        .temporal-stat-trend.neutral {
+            color: #666666;
+        }
+
+        /* Month Timeline Scrubber */
+        .month-timeline-container {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .month-timeline-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .month-timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .month-timeline-year {
+            font-size: 12px;
+            color: #666666;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .month-timeline-scrubber {
+            position: relative;
+        }
+
+        .month-timeline-track {
+            position: relative;
+            height: 6px;
+            background: #e5e5e5;
+            border-radius: 3px;
+        }
+
+        .month-timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #1a1a1a;
+            border-radius: 3px;
+        }
+
+        .month-timeline-thumb {
+            position: absolute;
+            top: -8px;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            cursor: grab;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .month-timeline-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .month-timeline-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+
+        .month-timeline-months {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+
+        .month-item {
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            padding: 8px 4px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .month-item:hover {
+            background: rgba(26, 26, 26, 0.05);
+        }
+
+        .month-item.active {
+            background: rgba(26, 26, 26, 0.08);
+        }
+
+        .month-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666666;
+            transition: color 0.2s ease;
+        }
+
+        .month-item.active .month-label {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .month-indicator {
+            width: 80%;
+            height: 3px;
+            background: #d1d5db;
+            margin: 6px auto 0;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .month-item.active .month-indicator {
+            background: #1a1a1a;
+            width: 100%;
+            height: 4px;
+        }
+
+        .month-item:hover .month-indicator {
+            background: #9ca3af;
+            width: 90%;
+        }
+
+        .month-item.active:hover .month-indicator {
+            background: #1a1a1a;
+            width: 100%;
+        }
+
+        .month-timeline-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .month-nav-btn {
+            background: transparent;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            cursor: pointer;
+            padding: 8px;
+            transition: all 0.2s ease;
+            color: #666666;
+        }
+
+        .month-nav-btn:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #1a1a1a;
+        }
+
+        .month-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .month-nav-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .month-display {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-variant-numeric: tabular-nums;
+        }
     </style>
 </head>
 
@@ -398,11 +885,12 @@
                 </p>
             </div>
 
+            <!-- Chart Controls -->
             <div class="chart-controls">
                 <div class="control-group">
-                    <button class="control-btn active" data-period="day">Day</button>
+                    <button class="control-btn" data-period="day">Day</button>
                     <button class="control-btn" data-period="week">Week</button>
-                    <button class="control-btn" data-period="month">Month</button>
+                    <button class="control-btn active" data-period="month">Month</button>
                     <button class="control-btn" data-period="year">Year</button>
                 </div>
 
@@ -415,6 +903,137 @@
                     Export
                 </button>
             </div>
+
+            <!-- Month Timeline Scrubber -->
+            <div class="month-timeline-container">
+                <div class="month-timeline-header">
+                    <h3 class="month-timeline-title">Timeline</h3>
+                    <div class="month-timeline-year">2024</div>
+                </div>
+
+                <div class="month-timeline-scrubber">
+                    <div class="month-timeline-track">
+                        <div class="month-timeline-progress" id="monthProgress"></div>
+                        <div class="month-timeline-thumb" id="monthThumb"></div>
+                    </div>
+
+                    <div class="month-timeline-months">
+                        <div class="month-item" data-month="0">
+                            <div class="month-label">JAN</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="1">
+                            <div class="month-label">FEB</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item active" data-month="2">
+                            <div class="month-label">MAR</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="3">
+                            <div class="month-label">APR</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="4">
+                            <div class="month-label">MAY</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="5">
+                            <div class="month-label">JUN</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="6">
+                            <div class="month-label">JUL</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="7">
+                            <div class="month-label">AUG</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="8">
+                            <div class="month-label">SEP</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="9">
+                            <div class="month-label">OCT</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="10">
+                            <div class="month-label">NOV</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                        <div class="month-item" data-month="11">
+                            <div class="month-label">DEC</div>
+                            <div class="month-indicator"></div>
+                        </div>
+                    </div>
+
+                    <div class="month-timeline-controls">
+                        <button class="month-nav-btn" id="prevMonth">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" fill="none" />
+                            </svg>
+                        </button>
+                        <div class="month-display" id="currentMonthDisplay">March 2024</div>
+                        <button class="month-nav-btn" id="nextMonth">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="2" fill="none" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Controls -->
+            <!-- <div class="timeline-container">
+                <div class="timeline-header">
+                    <div class="timeline-title">Timeline</div>
+                    <div class="timeline-date" id="timelineDate">Today, 2:30 PM</div>
+                </div>
+
+                <div class="timeline-controls">
+                    <button class="timeline-play-btn" id="timelinePlayBtn">
+                        <svg viewBox="0 0 24 24">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </button>
+
+                    <div class="timeline-slider-container">
+                        <input type="range" class="timeline-slider" id="timelineSlider" min="0" max="100" value="50">
+                        <div class="timeline-markers" id="timelineMarkers"></div>
+                    </div>
+
+                    <div class="timeline-speed">
+                        <span>Speed:</span>
+                        <button class="speed-btn" data-speed="0.5">0.5x</button>
+                        <button class="speed-btn active" data-speed="1">1x</button>
+                        <button class="speed-btn" data-speed="2">2x</button>
+                    </div>
+                </div>
+
+                <div class="temporal-stats">
+                    <div class="temporal-stat">
+                        <div class="temporal-stat-label">Peak Flow</div>
+                        <div class="temporal-stat-value" id="peakFlow">892M</div>
+                        <div class="temporal-stat-trend up" id="peakTrend">↑ 24%</div>
+                    </div>
+                    <div class="temporal-stat">
+                        <div class="temporal-stat-label">Low Flow</div>
+                        <div class="temporal-stat-value" id="lowFlow">245M</div>
+                        <div class="temporal-stat-trend down" id="lowTrend">↓ 8%</div>
+                    </div>
+                    <div class="temporal-stat">
+                        <div class="temporal-stat-label">Variance</div>
+                        <div class="temporal-stat-value" id="variance">±18%</div>
+                        <div class="temporal-stat-trend neutral" id="varianceTrend">~</div>
+                    </div>
+                    <div class="temporal-stat">
+                        <div class="temporal-stat-label">Trend</div>
+                        <div class="temporal-stat-value" id="trendDirection">Rising</div>
+                        <div class="temporal-stat-trend up" id="trendValue">↑ 12%</div>
+                    </div>
+                </div>
+            </div> -->
 
             <div class="chart-wrapper">
                 <canvas id="sankeyChart"></canvas>
@@ -433,6 +1052,160 @@
             <div class="legend-container">
                 <h3 class="legend-title">Node Categories</h3>
                 <div class="legend-grid" id="legendGrid"></div>
+
+                <!-- Additional Legend Information -->
+                <div class="legend-section">
+                    <h4 class="legend-subtitle">Flow Direction</h4>
+                    <div class="legend-flow-info">
+                        <div class="legend-flow-item">
+                            <div class="flow-arrow">
+                                <svg width="24" height="12" viewBox="0 0 24 12">
+                                    <path d="M2 6h16m0 0l-4-4m4 4l-4 4" stroke="#666" stroke-width="2" fill="none" />
+                                </svg>
+                            </div>
+                            <span>Data flows from left to right through the processing pipeline</span>
+                        </div>
+                        <div class="legend-flow-item">
+                            <div class="flow-thickness">
+                                <div class="flow-line thin"></div>
+                                <div class="flow-line thick"></div>
+                            </div>
+                            <span>Flow thickness represents data volume</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend-section">
+                    <h4 class="legend-subtitle">Interactions</h4>
+                    <div class="legend-interactions">
+                        <div class="interaction-item">
+                            <div class="interaction-demo">
+                                <div class="demo-node">Node</div>
+                                <div class="demo-cursor">🖱️</div>
+                            </div>
+                            <span>Click and drag timeline thumb to scrub through time</span>
+                        </div>
+                        <div class="interaction-item">
+                            <div class="interaction-demo">
+                                <div class="demo-highlight"></div>
+                            </div>
+                            <span>Hover over flows to highlight connections</span>
+                        </div>
+                        <div class="interaction-item">
+                            <div class="interaction-demo">
+                                <div class="demo-tooltip">
+                                    <div class="tooltip-mini">Flow: 150M</div>
+                                </div>
+                            </div>
+                            <span>Detailed tooltips show exact values and percentages</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend-section">
+                    <h4 class="legend-subtitle">Data Interpretation</h4>
+                    <div class="legend-data-info">
+                        <div class="data-item">
+                            <div class="data-visual">
+                                <span class="data-number">25.4B</span>
+                            </div>
+                            <span>Numbers represent data volume (K=Thousands, M=Millions, B=Billions)</span>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-visual">
+                                <div class="percentage-bar">
+                                    <div class="percentage-fill" style="width: 35%"></div>
+                                </div>
+                                <span class="percentage-text">35%</span>
+                            </div>
+                            <span>Percentages show proportion of total flow</span>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-visual">
+                                <div class="trend-indicator up">↗️ +12.5%</div>
+                            </div>
+                            <span>Trends show changes compared to previous period</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend-section">
+                    <h4 class="legend-subtitle">Visual Patterns</h4>
+                    <div class="legend-patterns">
+                        <div class="pattern-item">
+                            <div class="pattern-visual">
+                                <div class="pattern-bottleneck">
+                                    <div class="flow-wide"></div>
+                                    <div class="flow-narrow"></div>
+                                    <div class="flow-wide"></div>
+                                </div>
+                            </div>
+                            <span>Narrow flows indicate processing bottlenecks</span>
+                        </div>
+                        <div class="pattern-item">
+                            <div class="pattern-visual">
+                                <div class="pattern-split">
+                                    <div class="flow-single"></div>
+                                    <div class="flow-branch-container">
+                                        <div class="flow-branch"></div>
+                                        <div class="flow-branch"></div>
+                                        <div class="flow-branch"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span>Branching shows data distribution across multiple outputs</span>
+                        </div>
+                        <div class="pattern-item">
+                            <div class="pattern-visual">
+                                <div class="pattern-dominant">
+                                    <div class="flow-major"></div>
+                                    <div class="flow-minor"></div>
+                                    <div class="flow-minor"></div>
+                                </div>
+                            </div>
+                            <span>Dominant flows highlight primary data paths</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compact Footer Legend -->
+                <div class="legend-footer">
+                    <div class="footer-section">
+                        <div class="footer-item">
+                            <svg width="16" height="8" viewBox="0 0 16 8">
+                                <path d="M1 4h12m0 0l-3-3m3 3l-3 3" stroke="#999" stroke-width="1.5" fill="none" />
+                            </svg>
+                            <span>Data flows left to right</span>
+                        </div>
+                        <div class="footer-item">
+                            <div class="footer-thickness">
+                                <div class="footer-line thin"></div>
+                                <div class="footer-line thick"></div>
+                            </div>
+                            <span>Thickness = volume</span>
+                        </div>
+                    </div>
+                    <div class="footer-section">
+                        <div class="footer-item">
+                            <div class="footer-pattern">
+                                <div class="mini-flow wide"></div>
+                                <div class="mini-flow narrow"></div>
+                                <div class="mini-flow wide"></div>
+                            </div>
+                            <span>Bottlenecks</span>
+                        </div>
+                        <div class="footer-item">
+                            <div class="footer-pattern">
+                                <div class="mini-branch-container">
+                                    <div class="mini-branch"></div>
+                                    <div class="mini-branch"></div>
+                                    <div class="mini-branch"></div>
+                                </div>
+                            </div>
+                            <span>Distribution</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -440,6 +1213,12 @@
     <script>
         // Chart configuration
         const ctx = document.getElementById('sankeyChart').getContext('2d');
+
+        // Timeline state
+        let isPlaying = false;
+        let playSpeed = 1;
+        let currentTimeIndex = 50;
+        let playInterval = null;
 
         // Node categories for legend
         const nodeCategories = {
@@ -459,34 +1238,151 @@
             'Outputs': '#6366f1'       // Indigo
         };
 
-        // Data for different time periods
+        // Base flow template
+        const baseFlows = [
+            // Source -> Processing
+            { from: 'Web Traffic', to: 'Data Processing', baseFlow: 120 },
+            { from: 'Mobile App', to: 'Data Processing', baseFlow: 80 },
+            { from: 'API Calls', to: 'Data Processing', baseFlow: 150 },
+            { from: 'IoT Devices', to: 'Data Processing', baseFlow: 60 },
+            // Processing -> Analytics
+            { from: 'Data Processing', to: 'Real-time Analytics', baseFlow: 180 },
+            { from: 'Data Processing', to: 'Batch Analytics', baseFlow: 150 },
+            { from: 'Data Processing', to: 'ML Pipeline', baseFlow: 80 },
+            // Analytics -> Storage
+            { from: 'Real-time Analytics', to: 'Hot Storage', baseFlow: 120 },
+            { from: 'Real-time Analytics', to: 'Dashboard', baseFlow: 60 },
+            { from: 'Batch Analytics', to: 'Cold Storage', baseFlow: 100 },
+            { from: 'Batch Analytics', to: 'Reports', baseFlow: 50 },
+            { from: 'ML Pipeline', to: 'Model Storage', baseFlow: 40 },
+            { from: 'ML Pipeline', to: 'Predictions API', baseFlow: 40 },
+            // Storage -> Output
+            { from: 'Hot Storage', to: 'User Dashboard', baseFlow: 80 },
+            { from: 'Hot Storage', to: 'Alert System', baseFlow: 40 },
+            { from: 'Cold Storage', to: 'Data Warehouse', baseFlow: 100 },
+            { from: 'Reports', to: 'Email Reports', baseFlow: 30 },
+            { from: 'Reports', to: 'Executive Dashboard', baseFlow: 20 },
+            { from: 'Predictions API', to: 'Recommendation Engine', baseFlow: 40 }
+        ];
+
+        // Generate temporal data for each period
+        function generateTemporalData(period, baseFlows) {
+            const timePoints = 101; // 0-100 for slider
+            const data = [];
+
+            // Define time characteristics for each period
+            const periodConfig = {
+                day: {
+                    unit: 'hour',
+                    timeLabels: Array.from({ length: timePoints }, (_, i) => {
+                        const hour = Math.floor(i * 24 / 100);
+                        return `${hour.toString().padStart(2, '0')}:00`;
+                    }),
+                    multiplier: 1,
+                    // Daily patterns: higher during business hours, lower at night
+                    pattern: (i) => {
+                        const hour = (i * 24 / 100);
+                        // Business hours peak (9-17), night low (22-6)
+                        if (hour >= 9 && hour <= 17) return 1.3; // Peak business hours
+                        if (hour >= 22 || hour <= 6) return 0.4; // Night hours
+                        return 0.8; // Off-peak hours
+                    }
+                },
+                week: {
+                    unit: 'day',
+                    timeLabels: Array.from({ length: timePoints }, (_, i) => {
+                        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                        const dayIndex = Math.floor(i * 7 / 100);
+                        return days[dayIndex];
+                    }),
+                    multiplier: 7,
+                    // Weekly patterns: higher on weekdays, lower on weekends
+                    pattern: (i) => {
+                        const day = Math.floor(i * 7 / 100);
+                        if (day < 5) return 1.2; // Weekdays
+                        return 0.6; // Weekends
+                    }
+                },
+                month: {
+                    unit: 'day',
+                    timeLabels: Array.from({ length: timePoints }, (_, i) => {
+                        const day = Math.floor(i * 30 / 100) + 1;
+                        return `${day}`;
+                    }),
+                    multiplier: 30,
+                    // Monthly patterns: varies throughout month
+                    pattern: (i) => {
+                        const day = i * 30 / 100;
+                        // Higher at beginning and end of month, dip in middle
+                        if (day <= 5 || day >= 25) return 1.4;
+                        if (day >= 10 && day <= 20) return 0.8;
+                        return 1.0;
+                    }
+                },
+                year: {
+                    unit: 'month',
+                    timeLabels: Array.from({ length: timePoints }, (_, i) => {
+                        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        const monthIndex = Math.floor(i * 12 / 100);
+                        return months[monthIndex];
+                    }),
+                    multiplier: 365,
+                    // Yearly patterns: seasonal variations
+                    pattern: (i) => {
+                        const month = Math.floor(i * 12 / 100);
+                        // Higher in Q4 and Q1, lower in summer
+                        if (month >= 10 || month <= 2) return 1.5; // Holiday season
+                        if (month >= 6 && month <= 8) return 0.7; // Summer slowdown
+                        return 1.0;
+                    }
+                }
+            };
+
+            const config = periodConfig[period];
+
+            for (let i = 0; i < timePoints; i++) {
+                const timePoint = {
+                    index: i,
+                    label: config.timeLabels[i],
+                    flows: baseFlows.map(flow => {
+                        // Apply period pattern
+                        const patternMultiplier = config.pattern(i);
+
+                        // Add some randomness for realism
+                        const randomness = 0.8 + Math.random() * 0.4; // ±20% random variation
+
+                        // Apply different variations to different flow types
+                        let flowMultiplier = 1;
+                        if (flow.from.includes('Web')) flowMultiplier = 1.2; // Web traffic varies more
+                        if (flow.from.includes('IoT')) flowMultiplier = 0.9; // IoT is more stable
+                        if (flow.from.includes('API')) flowMultiplier = 1.1; // API calls vary
+
+                        const finalFlow = Math.round(
+                            flow.baseFlow *
+                            config.multiplier *
+                            patternMultiplier *
+                            randomness *
+                            flowMultiplier
+                        );
+
+                        return {
+                            from: flow.from,
+                            to: flow.to,
+                            flow: Math.max(1, finalFlow) // Ensure minimum flow of 1
+                        };
+                    })
+                };
+                data.push(timePoint);
+            }
+
+            return data;
+        }
+
+        // Data for different time periods with temporal variations
         const periodData = {
             day: {
-                flows: [
-                    // Source -> Processing
-                    { from: 'Web Traffic', to: 'Data Processing', flow: 120 },
-                    { from: 'Mobile App', to: 'Data Processing', flow: 80 },
-                    { from: 'API Calls', to: 'Data Processing', flow: 150 },
-                    { from: 'IoT Devices', to: 'Data Processing', flow: 60 },
-                    // Processing -> Analytics
-                    { from: 'Data Processing', to: 'Real-time Analytics', flow: 180 },
-                    { from: 'Data Processing', to: 'Batch Analytics', flow: 150 },
-                    { from: 'Data Processing', to: 'ML Pipeline', flow: 80 },
-                    // Analytics -> Storage
-                    { from: 'Real-time Analytics', to: 'Hot Storage', flow: 120 },
-                    { from: 'Real-time Analytics', to: 'Dashboard', flow: 60 },
-                    { from: 'Batch Analytics', to: 'Cold Storage', flow: 100 },
-                    { from: 'Batch Analytics', to: 'Reports', flow: 50 },
-                    { from: 'ML Pipeline', to: 'Model Storage', flow: 40 },
-                    { from: 'ML Pipeline', to: 'Predictions API', flow: 40 },
-                    // Storage -> Output
-                    { from: 'Hot Storage', to: 'User Dashboard', flow: 80 },
-                    { from: 'Hot Storage', to: 'Alert System', flow: 40 },
-                    { from: 'Cold Storage', to: 'Data Warehouse', flow: 100 },
-                    { from: 'Reports', to: 'Email Reports', flow: 30 },
-                    { from: 'Reports', to: 'Executive Dashboard', flow: 20 },
-                    { from: 'Predictions API', to: 'Recommendation Engine', flow: 40 }
-                ],
+                temporal: generateTemporalData('day', baseFlows),
                 stats: {
                     totalFlow: '847.3M',
                     totalFlowChange: { value: 12.5, positive: true },
@@ -497,31 +1393,7 @@
                 }
             },
             week: {
-                flows: [
-                    // Source -> Processing (weekly aggregated)
-                    { from: 'Web Traffic', to: 'Data Processing', flow: 840 },
-                    { from: 'Mobile App', to: 'Data Processing', flow: 560 },
-                    { from: 'API Calls', to: 'Data Processing', flow: 1050 },
-                    { from: 'IoT Devices', to: 'Data Processing', flow: 420 },
-                    // Processing -> Analytics
-                    { from: 'Data Processing', to: 'Real-time Analytics', flow: 1260 },
-                    { from: 'Data Processing', to: 'Batch Analytics', flow: 1050 },
-                    { from: 'Data Processing', to: 'ML Pipeline', flow: 560 },
-                    // Analytics -> Storage
-                    { from: 'Real-time Analytics', to: 'Hot Storage', flow: 840 },
-                    { from: 'Real-time Analytics', to: 'Dashboard', flow: 420 },
-                    { from: 'Batch Analytics', to: 'Cold Storage', flow: 700 },
-                    { from: 'Batch Analytics', to: 'Reports', flow: 350 },
-                    { from: 'ML Pipeline', to: 'Model Storage', flow: 280 },
-                    { from: 'ML Pipeline', to: 'Predictions API', flow: 280 },
-                    // Storage -> Output
-                    { from: 'Hot Storage', to: 'User Dashboard', flow: 560 },
-                    { from: 'Hot Storage', to: 'Alert System', flow: 280 },
-                    { from: 'Cold Storage', to: 'Data Warehouse', flow: 700 },
-                    { from: 'Reports', to: 'Email Reports', flow: 210 },
-                    { from: 'Reports', to: 'Executive Dashboard', flow: 140 },
-                    { from: 'Predictions API', to: 'Recommendation Engine', flow: 280 }
-                ],
+                temporal: generateTemporalData('week', baseFlows),
                 stats: {
                     totalFlow: '5.9B',
                     totalFlowChange: { value: 15.3, positive: true },
@@ -532,31 +1404,7 @@
                 }
             },
             month: {
-                flows: [
-                    // Source -> Processing (monthly aggregated)
-                    { from: 'Web Traffic', to: 'Data Processing', flow: 3600 },
-                    { from: 'Mobile App', to: 'Data Processing', flow: 2400 },
-                    { from: 'API Calls', to: 'Data Processing', flow: 4500 },
-                    { from: 'IoT Devices', to: 'Data Processing', flow: 1800 },
-                    // Processing -> Analytics
-                    { from: 'Data Processing', to: 'Real-time Analytics', flow: 5400 },
-                    { from: 'Data Processing', to: 'Batch Analytics', flow: 4500 },
-                    { from: 'Data Processing', to: 'ML Pipeline', flow: 2400 },
-                    // Analytics -> Storage
-                    { from: 'Real-time Analytics', to: 'Hot Storage', flow: 3600 },
-                    { from: 'Real-time Analytics', to: 'Dashboard', flow: 1800 },
-                    { from: 'Batch Analytics', to: 'Cold Storage', flow: 3000 },
-                    { from: 'Batch Analytics', to: 'Reports', flow: 1500 },
-                    { from: 'ML Pipeline', to: 'Model Storage', flow: 1200 },
-                    { from: 'ML Pipeline', to: 'Predictions API', flow: 1200 },
-                    // Storage -> Output
-                    { from: 'Hot Storage', to: 'User Dashboard', flow: 2400 },
-                    { from: 'Hot Storage', to: 'Alert System', flow: 1200 },
-                    { from: 'Cold Storage', to: 'Data Warehouse', flow: 3000 },
-                    { from: 'Reports', to: 'Email Reports', flow: 900 },
-                    { from: 'Reports', to: 'Executive Dashboard', flow: 600 },
-                    { from: 'Predictions API', to: 'Recommendation Engine', flow: 1200 }
-                ],
+                temporal: generateTemporalData('month', baseFlows),
                 stats: {
                     totalFlow: '25.4B',
                     totalFlowChange: { value: 18.7, positive: true },
@@ -567,31 +1415,7 @@
                 }
             },
             year: {
-                flows: [
-                    // Source -> Processing (yearly aggregated)
-                    { from: 'Web Traffic', to: 'Data Processing', flow: 43200 },
-                    { from: 'Mobile App', to: 'Data Processing', flow: 28800 },
-                    { from: 'API Calls', to: 'Data Processing', flow: 54000 },
-                    { from: 'IoT Devices', to: 'Data Processing', flow: 21600 },
-                    // Processing -> Analytics
-                    { from: 'Data Processing', to: 'Real-time Analytics', flow: 64800 },
-                    { from: 'Data Processing', to: 'Batch Analytics', flow: 54000 },
-                    { from: 'Data Processing', to: 'ML Pipeline', flow: 28800 },
-                    // Analytics -> Storage
-                    { from: 'Real-time Analytics', to: 'Hot Storage', flow: 43200 },
-                    { from: 'Real-time Analytics', to: 'Dashboard', flow: 21600 },
-                    { from: 'Batch Analytics', to: 'Cold Storage', flow: 36000 },
-                    { from: 'Batch Analytics', to: 'Reports', flow: 18000 },
-                    { from: 'ML Pipeline', to: 'Model Storage', flow: 14400 },
-                    { from: 'ML Pipeline', to: 'Predictions API', flow: 14400 },
-                    // Storage -> Output
-                    { from: 'Hot Storage', to: 'User Dashboard', flow: 28800 },
-                    { from: 'Hot Storage', to: 'Alert System', flow: 14400 },
-                    { from: 'Cold Storage', to: 'Data Warehouse', flow: 36000 },
-                    { from: 'Reports', to: 'Email Reports', flow: 10800 },
-                    { from: 'Reports', to: 'Executive Dashboard', flow: 7200 },
-                    { from: 'Predictions API', to: 'Recommendation Engine', flow: 14400 }
-                ],
+                temporal: generateTemporalData('year', baseFlows),
                 stats: {
                     totalFlow: '304.8B',
                     totalFlowChange: { value: 23.5, positive: true },
@@ -604,7 +1428,7 @@
         };
 
         // Initialize with day data
-        let currentPeriod = 'day';
+        let currentPeriod = 'month';
         let sankeyChart = null;
         let totalFlow = 0;
 
@@ -640,9 +1464,10 @@
 
         // Create/update chart
         function createChart(period) {
+            const currentData = periodData[period].temporal[currentTimeIndex];
             const data = {
                 datasets: [{
-                    data: periodData[period].flows,
+                    data: currentData.flows,
                     colorFrom: (c) => getNodeColor(c.dataset.data[c.dataIndex].from),
                     colorTo: (c) => getNodeColor(c.dataset.data[c.dataIndex].to),
                     colorMode: 'gradient',
@@ -760,37 +1585,10 @@
                                     </div>
                                 `;
 
-                                // Check if it's a node or a flow
-                                if (item.from && item.to) { // It's a flow
-                                    // Flow tooltip already configured
-                                } else if (item.name) { // Assuming it's a node, if we had node-specific data points
-                                    // This part needs node-specific hover logic, which is not directly supported by sankey plugin for nodes.
-                                    // We handle node highlighting through flow hovers.
-                                    // For dedicated node tooltips, a different approach or plugin extension would be needed.
-                                    title.textContent = item.name;
-                                    const incoming = sankeyChart.data.datasets[0].data.filter(d => d.to === item.name).reduce((sum, d) => sum + d.flow, 0);
-                                    const outgoing = sankeyChart.data.datasets[0].data.filter(d => d.from === item.name).reduce((sum, d) => sum + d.flow, 0);
-                                    content.innerHTML = `
-                                        <div class="tooltip-row">
-                                            <span class="tooltip-label">Total Incoming</span>
-                                            <span class="tooltip-value">${incoming.toLocaleString()}${unit}</span>
-                                        </div>
-                                        <div class="tooltip-row">
-                                            <span class="tooltip-label">Total Outgoing</span>
-                                            <span class="tooltip-value">${outgoing.toLocaleString()}${unit}</span>
-                                        </div>
-                                        <div class="tooltip-row">
-                                            <span class="tooltip-label">Category</span>
-                                            <span class="tooltip-value">${getNodeCategory(item.name)}</span>
-                                        </div>
-                                    `;
-                                }
-
-
                                 // Position tooltip
                                 const position = context.chart.canvas.getBoundingClientRect();
                                 tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-                                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.offsetHeight - 10 + 'px'; // Adjust Y to be above cursor
+                                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY - tooltipEl.offsetHeight - 10 + 'px';
 
                                 tooltipEl.classList.add('show');
                             } else {
@@ -819,64 +1617,6 @@
                 type: 'sankey',
                 data: data,
                 options: options
-            });
-
-            // Add hover effects for nodes via canvas event listeners
-            // This is a workaround as the plugin doesn't directly support node-specific hover states for our desired highlighting
-            sankeyChart.canvas.addEventListener('mousemove', (event) => {
-                const points = sankeyChart.getElementsAtEventForMode(event, 'point', { intersect: true }, true);
-
-                // Reset all flows to original or dimmed alpha if nothing specific is truly hovered.
-                let isHoveringFlow = false;
-                if (points.length > 0) {
-                    const activeElement = points[0];
-                    const elementType = sankeyChart.data.datasets[activeElement.datasetIndex].data[activeElement.index];
-                    if (elementType && elementType.from && elementType.to) { // Check if it's a flow
-                        isHoveringFlow = true;
-                    }
-                }
-
-                if (!isHoveringFlow) {
-                    let somethingHighlighted = false;
-                    sankeyChart.data.datasets[0].data.forEach(d => {
-                        if (d.highlightedNode) somethingHighlighted = true;
-                    });
-
-                    // If no flow is hovered, check for node hover based on coordinates
-                    const chartArea = sankeyChart.chartArea;
-                    const x = event.offsetX;
-                    const y = event.pageY - sankeyChart.canvas.getBoundingClientRect().top; // Adjust for canvas position
-
-                    let hoveredNodeName = null;
-                    if (sankeyChart.scene && sankeyChart.scene.nodes) {
-                        sankeyChart.scene.nodes.forEach(node => {
-                            if (x >= node.x && x <= node.x + node.width && y >= node.y && y <= node.y + node.height) {
-                                hoveredNodeName = node.key;
-                            }
-                        });
-                    }
-
-                    if (hoveredNodeName) {
-                        sankeyChart.data.datasets[0].data.forEach(d => {
-                            if (d.from === hoveredNodeName || d.to === hoveredNodeName) {
-                                d.alpha = 1;
-                                d.highlightedNode = true;
-                            } else {
-                                d.alpha = 0.2;
-                                d.highlightedNode = false;
-                            }
-                        });
-                        sankeyChart.update('none'); // 'none' for no animation to avoid stutter
-                        if (document.getElementById('customTooltip')) document.getElementById('customTooltip').classList.remove('show'); // Hide flow tooltip
-
-                    } else if (!somethingHighlighted) { // Only reset if no node was highlighted previously
-                        sankeyChart.data.datasets[0].data.forEach(d => {
-                            d.alpha = d.originalAlpha !== undefined ? d.originalAlpha : sankeyChart.config.data.datasets[0].alpha;
-                            d.highlightedNode = false;
-                        });
-                        sankeyChart.update('none');
-                    }
-                }
             });
         }
 
@@ -922,7 +1662,166 @@
         createChart(currentPeriod);
         updateStats(periodData[currentPeriod].stats);
 
-        // Period selection
+        // Month Timeline Scrubber State
+        let currentMonth = 2; // March (0-indexed)
+        let isDragging = false;
+
+        // Month names for display
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        // Initialize month timeline
+        function initializeMonthTimeline() {
+            updateMonthTimeline();
+
+            // Month item click handlers
+            document.querySelectorAll('.month-item').forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    selectMonth(index);
+                });
+            });
+
+            // Navigation button handlers
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                if (currentMonth > 0) {
+                    selectMonth(currentMonth - 1);
+                }
+            });
+
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                if (currentMonth < 11) {
+                    selectMonth(currentMonth + 1);
+                }
+            });
+
+            // Thumb drag functionality
+            const thumb = document.getElementById('monthThumb');
+            const track = document.querySelector('.month-timeline-track');
+
+            thumb.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+                e.preventDefault();
+            });
+
+            // Track click functionality
+            track.addEventListener('click', (e) => {
+                if (!isDragging) {
+                    const rect = track.getBoundingClientRect();
+                    const percentage = (e.clientX - rect.left) / rect.width;
+                    const monthIndex = Math.round(percentage * 11);
+                    selectMonth(Math.max(0, Math.min(11, monthIndex)));
+                }
+            });
+
+            function handleMouseMove(e) {
+                if (!isDragging) return;
+
+                const track = document.querySelector('.month-timeline-track');
+                const rect = track.getBoundingClientRect();
+                const percentage = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                const monthIndex = Math.round(percentage * 11);
+
+                selectMonth(monthIndex);
+            }
+
+            function handleMouseUp() {
+                isDragging = false;
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            }
+        }
+
+        function selectMonth(monthIndex) {
+            currentMonth = Math.max(0, Math.min(11, monthIndex));
+            updateMonthTimeline();
+
+            // Generate month-specific data variation
+            generateMonthData(currentMonth);
+
+            // Update chart if we're in month period
+            if (currentPeriod === 'month') {
+                createChart(currentPeriod);
+            }
+        }
+
+        function updateMonthTimeline() {
+            // Update active month indicator
+            document.querySelectorAll('.month-item').forEach((item, index) => {
+                item.classList.toggle('active', index === currentMonth);
+            });
+
+            // Update progress bar and thumb position
+            const progress = document.getElementById('monthProgress');
+            const thumb = document.getElementById('monthThumb');
+            const percentage = (currentMonth / 11) * 100;
+
+            progress.style.width = percentage + '%';
+            thumb.style.left = `calc(${percentage}% - 10px)`; // Offset by half thumb width
+
+            // Update month display
+            document.getElementById('currentMonthDisplay').textContent =
+                `${monthNames[currentMonth]} 2024`;
+
+            // Update navigation button states
+            document.getElementById('prevMonth').style.opacity = currentMonth === 0 ? '0.3' : '1';
+            document.getElementById('nextMonth').style.opacity = currentMonth === 11 ? '0.3' : '1';
+        }
+
+        function generateMonthData(monthIndex) {
+            // Create month-specific variations to the base data
+            const monthVariations = {
+                0: 0.8,   // January - post-holiday low
+                1: 0.9,   // February - gradual recovery
+                2: 1.0,   // March - baseline
+                3: 1.1,   // April - spring uptick
+                4: 1.2,   // May - strong growth
+                5: 0.9,   // June - summer slowdown begins
+                6: 0.8,   // July - summer low
+                7: 0.85,  // August - still slow
+                8: 1.1,   // September - back to school/work
+                9: 1.25,  // October - peak season
+                10: 1.4,  // November - holiday rush
+                11: 1.3   // December - holiday peak but some decline
+            };
+
+            const variation = monthVariations[monthIndex];
+
+            // Update the month period data with this variation
+            periodData.month.temporal = generateTemporalData('month', baseFlows.map(flow => ({
+                ...flow,
+                baseFlow: Math.round(flow.baseFlow * variation)
+            })));
+
+            // Update stats for the month
+            const baseTotal = 25.4; // Base total in billions
+            const adjustedTotal = (baseTotal * variation).toFixed(1);
+
+            periodData.month.stats = {
+                totalFlow: `${adjustedTotal}B`,
+                totalFlowChange: {
+                    value: ((variation - 1) * 100).toFixed(1),
+                    positive: variation >= 1
+                },
+                activeNodes: '24',
+                activeNodesChange: { value: 0, positive: true },
+                averageFlow: `${(adjustedTotal * 1000 / 24).toFixed(0)}M`,
+                averageFlowChange: {
+                    value: ((variation - 1) * 100 * 0.8).toFixed(1),
+                    positive: variation >= 1
+                }
+            };
+
+            // Update stats display if in month view
+            if (currentPeriod === 'month') {
+                updateStats(periodData.month.stats);
+            }
+        }
+
+        // Period selection for the chart controls
         document.querySelectorAll('.control-btn[data-period]').forEach(btn => {
             btn.addEventListener('click', function () {
                 // Update active state
@@ -941,10 +1840,13 @@
         // Download functionality
         function downloadChart() {
             const link = document.createElement('a');
-            link.download = `data-flow-analysis-${currentPeriod}.png`;
+            link.download = `data-flow-analysis-${currentPeriod}-${monthNames[currentMonth]}.png`;
             link.href = sankeyChart.toBase64Image();
             link.click();
         }
+
+        // Initialize month timeline
+        initializeMonthTimeline();
     </script>
 </body>
 
